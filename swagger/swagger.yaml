@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Shuttle Reservation System API
+  title: Shuttle Reservation API
   version: 1.0.0
   description: |-
     This API enables organizations to streamline shuttle operations for employees. Employees can log in using their work email, view the nearest nodal point, check available shuttles, and reserve a seat. Shuttle operators can manage shuttle schedules, routes, and details.vices, nodal points, bookings, drivers, and more.
@@ -720,6 +720,7 @@ paths:
             schema:
               type: object
               properties:
+
                 bus_id:
                   type: string
                 route_id:
@@ -727,6 +728,9 @@ paths:
                 driver_id:
                   type: string
              
+                seat_capacity:
+                  type: number
+
       responses:
         '200':
           description: Shuttle details updated
@@ -740,8 +744,7 @@ paths:
                   shuttle_id:
                     type: string
                     
-                    
-  
+                     
   /buses:
     post:
       tags:
@@ -816,7 +819,7 @@ paths:
                     type: string
                   bus_id:
                     type: string
-                    
+                   
                     
     patch:
       tags:
@@ -853,4 +856,5 @@ paths:
                     type: string
                     
    
+
   
