@@ -374,8 +374,7 @@ paths:
                     type: string
                   status:
                     type: string
-                  seat_number:
-                    type: string
+             
 
   /booking/{booking_id}:
     delete:
@@ -477,7 +476,7 @@ paths:
                   is_full:
                     type: boolean
                   remaining_seats:
-                    type: number
+                    type: integer
 
   /poc:
     post:
@@ -659,14 +658,13 @@ paths:
             schema:
               type: object
               properties:
-                bus_number:
+                bus_id:
                   type: string
                 route_id:
                   type: string
                 driver_id:
                   type: string
-                seat_capacity:
-                  type: number
+
       responses:
         '200':
           description: Shuttle assigned
@@ -722,14 +720,17 @@ paths:
             schema:
               type: object
               properties:
-                bus_number:
+
+                bus_id:
                   type: string
                 route_id:
                   type: string
                 driver_id:
                   type: string
+             
                 seat_capacity:
                   type: number
+
       responses:
         '200':
           description: Shuttle details updated
@@ -743,5 +744,117 @@ paths:
                   shuttle_id:
                     type: string
                     
+                     
+  /buses:
+    post:
+      tags:
+        - Bus 
+      summary: Add bus details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bus_number:
+                  type: string
+                seat_capacity:
+                  type: integer
+      responses:
+        '200':
+          description: bus details added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  bus_id:
+                    type: string
                     
+    get:  
+      tags:
+        - Bus
+      summary: Display the list of buses
+      responses:
+        '200':
+          description: List of buses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    bus_id:
+                      type: string
+                    seat_capacity:
+                      type: integer
+                  
+                    
+                    
+
+  /buses/{bus_id}:
+    delete:
+      tags:
+        - Bus
+      summary: Remove a bus 
+      parameters:
+        - name: bus_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: bus removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  bus_id:
+                    type: string
+                   
+                    
+    patch:
+      tags:
+        - Bus
+      summary: Update specific attributes of a bus.
+      parameters:
+        - name: bus_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bus_number:
+                  type: string
+                seat_capacity:
+                  type: integer
+      responses:
+        '200':
+          description: bus details updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  bus_id:
+                    type: string
+                    
+   
+
   
