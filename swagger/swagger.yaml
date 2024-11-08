@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Shuttle Reservation API
+  title: Shuttle Reservation System API
   version: 1.0.0
   description: |-
     This API enables organizations to streamline shuttle operations for employees. Employees can log in using their work email, view the nearest nodal point, check available shuttles, and reserve a seat. Shuttle operators can manage shuttle schedules, routes, and details.vices, nodal points, bookings, drivers, and more.
@@ -374,8 +374,7 @@ paths:
                     type: string
                   status:
                     type: string
-                  seat_number:
-                    type: string
+             
 
   /booking/{booking_id}:
     delete:
@@ -477,7 +476,7 @@ paths:
                   is_full:
                     type: boolean
                   remaining_seats:
-                    type: number
+                    type: integer
 
   /poc:
     post:
@@ -659,14 +658,13 @@ paths:
             schema:
               type: object
               properties:
-                bus_number:
+                bus_id:
                   type: string
                 route_id:
                   type: string
                 driver_id:
                   type: string
-                seat_capacity:
-                  type: number
+
       responses:
         '200':
           description: Shuttle assigned
@@ -722,14 +720,13 @@ paths:
             schema:
               type: object
               properties:
-                bus_number:
+                bus_id:
                   type: string
                 route_id:
                   type: string
                 driver_id:
                   type: string
-                seat_capacity:
-                  type: number
+             
       responses:
         '200':
           description: Shuttle details updated
@@ -744,4 +741,116 @@ paths:
                     type: string
                     
                     
+  
+  /buses:
+    post:
+      tags:
+        - Bus 
+      summary: Add bus details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bus_number:
+                  type: string
+                seat_capacity:
+                  type: integer
+      responses:
+        '200':
+          description: bus details added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  bus_id:
+                    type: string
+                    
+    get:  
+      tags:
+        - Bus
+      summary: Display the list of buses
+      responses:
+        '200':
+          description: List of buses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    bus_id:
+                      type: string
+                    seat_capacity:
+                      type: integer
+                  
+                    
+                    
+
+  /buses/{bus_id}:
+    delete:
+      tags:
+        - Bus
+      summary: Remove a bus 
+      parameters:
+        - name: bus_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: bus removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  bus_id:
+                    type: string
+                    
+                    
+    patch:
+      tags:
+        - Bus
+      summary: Update specific attributes of a bus.
+      parameters:
+        - name: bus_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bus_number:
+                  type: string
+                seat_capacity:
+                  type: integer
+      responses:
+        '200':
+          description: bus details updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  bus_id:
+                    type: string
+                    
+   
   
