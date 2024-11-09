@@ -412,7 +412,7 @@ paths:
                     additionalProperties:
                       type: string
 
-  /Company:
+  /company:
     post:
       tags:
         - Company
@@ -441,7 +441,7 @@ paths:
                   Company_ID:
                     type: string
 
-  /Company/{Company_ID}:
+  /company/{company_ID}:
     delete:
       tags:
         - Company
