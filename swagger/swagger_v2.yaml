@@ -1,0 +1,803 @@
+openapi: 3.0.0
+info:
+  title: Shuttle Reservation API
+  version: 1.0.0
+  description: |-
+    This API enables organizations to streamline shuttle operations for employees. Employees can log in using their work email, view the nearest nodal point, check available shuttles, and reserve a seat. Shuttle operators can manage shuttle schedules, routes, and details.vices, nodal points, bookings, drivers, and more.
+servers:
+  - url: https://api.shuttlesystem.com/v1
+paths:
+  /employee_register:
+    post:
+      tags:
+        - User Registration
+      summary: Register a new employee for the app.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+
+      responses:
+        "200":
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  employee_id:
+                    type: string
+
+  /employee_login:
+    post:
+      tags:
+        - User Login
+      summary: Login into the app.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /nodal-points:
+    get:
+      tags:
+        - Nodal Points
+      summary: Get available nodal points.
+      responses:
+        "200":
+          description: List of nodal points
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    nodal_point_id:
+                      type: string
+
+                    location:
+                      type: string
+
+    post:
+      tags:
+        - Nodal Points
+      summary: Add a new nodal point.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                location:
+                  type: string
+
+      responses:
+        "200":
+          description: Nodal point added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  nodal_point_id:
+                    type: string
+
+  /nodal-points/{nodal_point_id}:
+    delete:
+      tags:
+        - Nodal Points
+      summary: Delete a specific nodal point.
+      parameters:
+        - name: nodal_point_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Nodal point deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  nodal_point_id:
+                    type: string
+
+    patch:
+      tags:
+        - Nodal Points
+      summary: Update specific attributes of a nodal point.
+      parameters:
+        - name: nodal_point_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                location:
+                  type: string
+
+      responses:
+        "200":
+          description: Nodal point updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  nodal_point_id:
+                    type: string
+
+  /shuttle-routes:
+    get:
+      tags:
+        - Shuttle Routes
+      summary: Display available shuttle routes.
+      parameters:
+        - name: nodal_point_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of shuttle routes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    route_id:
+                      type: string
+                    start_point:
+                      type: string
+                    end_point:
+                      type: string
+                    intermediate_points:
+                      type: array
+                      items:
+                        type: string
+                    timings:
+                      type: array
+                      items:
+                        type: string
+    post:
+      tags:
+        - Shuttle Routes
+      summary: Create a new shuttle route.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start_point:
+                  type: string
+                end_point:
+                  type: string
+                intermediate_points:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Shuttle route created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  route_id:
+                    type: string
+
+  /shuttle-routes/{route_id}:
+    delete:
+      tags:
+        - Shuttle Routes
+      summary: Delete a specific route.
+      parameters:
+        - name: route_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Shuttle route deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  route_id:
+                    type: string
+
+    patch:
+      tags:
+        - Shuttle Routes
+      summary: Update specific attributes of a shuttle route.
+      parameters:
+        - name: route_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start_point:
+                  type: string
+                end_point:
+                  type: string
+                intermediate_points:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Shuttle route updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  route_id:
+                    type: string
+
+  /booking:
+    post:
+      tags:
+        - Booking
+      summary: Book a seat on a selected route.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                route_id:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                time:
+                  type: string
+                  format: time
+                employee_id:
+                  type: string
+      responses:
+        "200":
+          description: Booking confirmation or waitlist response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                      booking_id:
+                        type: string
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                      waitlist_id:
+                        type: string
+
+  /booking/{booking_id}:
+    delete:
+      tags:
+        - Booking
+      summary: Cancel a specific booking.
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Booking canceled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  booking_id:
+                    type: string
+
+    patch:
+      tags:
+        - Booking
+      summary: Update a specific booking.
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                route_id:
+                  type: string
+                  description: Optional updated route ID
+                date:
+                  type: string
+                  format: date
+                  description: Optional updated date of the booking
+                time:
+                  type: string
+                  format: time
+                  description: Optional updated time of the booking
+      responses:
+        "200":
+          description: Booking updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  booking_id:
+                    type: string
+                  updated_fields:
+                    type: object
+                    description: Fields that were updated
+                    additionalProperties:
+                      type: string
+
+  /Company:
+    post:
+      tags:
+        - Company
+      summary: Add a new company.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Companyname:
+                  type: string
+                PointOfContact:
+                  type: string
+      responses:
+        "200":
+          description: Company added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  Company_ID:
+                    type: string
+
+  /Company/{Company_ID}:
+    delete:
+      tags:
+        - Company
+      summary: Remove a specific Company.
+      parameters:
+        - name: Company_ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Company removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  Company_ID:
+                    type: string
+    patch:
+      tags:
+        - Company
+      summary: Update a specific Company Details.
+      parameters:
+        - name: Company_ID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Company removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  Company_ID:
+                    type: string
+
+  /drivers:
+    post:
+      tags:
+        - Driver Information
+      summary: Register a new driver.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                license_number:
+                  type: string
+                contact_number:
+                  type: string
+      responses:
+        "200":
+          description: Driver registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  driver_id:
+                    type: string
+    get:
+      tags:
+        - Driver Information
+      summary: Display the list of drivers.
+      responses:
+        "200":
+          description: List of drivers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    driver_id:
+                      type: string
+                    name:
+                      type: string
+                    license_number:
+                      type: string
+                    contact_number:
+                      type: string
+
+  /drivers/{driver_id}:
+    delete:
+      tags:
+        - Driver Information
+      summary: Delete a driver.
+      parameters:
+        - name: driver_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Driver removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  driver_id:
+                    type: string
+
+    patch:
+      tags:
+        - Driver Information
+      summary: Update specific attributes of a driver.
+      parameters:
+        - name: driver_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                license_number:
+                  type: string
+                contact_number:
+                  type: string
+      responses:
+        "200":
+          description: Driver details updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  driver_id:
+                    type: string
+
+  /shuttles:
+    post:
+      tags:
+        - Shuttle
+      summary: Assign bus details to a route.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bus_id:
+                  type: string
+                route_id:
+                  type: string
+                driver_id:
+                  type: string
+
+      responses:
+        "200":
+          description: Shuttle assigned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  shuttle_id:
+                    type: string
+
+  /shuttles/{shuttle_id}:
+    delete:
+      tags:
+        - Shuttle
+      summary: Remove a bus from the system.
+      parameters:
+        - name: shuttle_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Shuttle removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  shuttle_id:
+                    type: string
+
+    patch:
+      tags:
+        - Shuttle
+      summary: Update specific attributes of a shuttle.
+      parameters:
+        - name: shuttle_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bus_id:
+                  type: string
+                route_id:
+                  type: string
+                driver_id:
+                  type: string
+
+                seat_capacity:
+                  type: number
+
+      responses:
+        "200":
+          description: Shuttle details updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  shuttle_id:
+                    type: string
+
+  /buses:
+    post:
+      tags:
+        - Bus
+      summary: Add bus details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bus_number:
+                  type: string
+                seat_capacity:
+                  type: integer
+      responses:
+        "200":
+          description: bus details added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  bus_id:
+                    type: string
+
+    get:
+      tags:
+        - Bus
+      summary: Display the list of buses
+      responses:
+        "200":
+          description: List of buses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    bus_id:
+                      type: string
+                    seat_capacity:
+                      type: integer
+
+  /buses/{bus_id}:
+    delete:
+      tags:
+        - Bus
+      summary: Remove a bus
+      parameters:
+        - name: bus_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: bus removed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  bus_id:
+                    type: string
+
+    patch:
+      tags:
+        - Bus
+      summary: Update specific attributes of a bus.
+      parameters:
+        - name: bus_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bus_number:
+                  type: string
+                seat_capacity:
+                  type: integer
+      responses:
+        "200":
+          description: bus details updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  bus_id:
+                    type: string
