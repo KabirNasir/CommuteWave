@@ -447,7 +447,7 @@ paths:
         - Company
       summary: Remove a specific Company.
       parameters:
-        - name: Company_ID
+        - name: company_ID
           in: path
           required: true
           schema:
@@ -466,10 +466,10 @@ paths:
                     type: string
     patch:
       tags:
-        - Company
+        - company
       summary: Update a specific Company Details.
       parameters:
-        - name: Company_ID
+        - name: company_ID
           in: path
           required: true
           schema:
